@@ -10,13 +10,14 @@ license = "MIT"
 license-files = ["LICENSE"]
 readme = "README.md"
 description = "a lightweight vLLM implementation built from scratch"
-requires-python = ">=3.10,<3.13"
+requires-python = ">=3.12,<3.13"
 dependencies = [
-    "torch>=2.4.0",
+    "torch==2.12.0",
     "triton>=3.0.0",
     "transformers>=4.51.0",
-    "flash-attn",
+    "flash-attn==2.8.3+cu130torch2.12",
     "xxhash",
+    "psutil",
 ]
 
 [project.urls]
@@ -25,3 +26,13 @@ Homepage="https://github.com/GeeeekExplorer/nano-vllm"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["nanovllm*"]
+
+# Force torch to resolve from PyTorch's cu130 index so we get a CUDA-13 wheel.
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu130" }
+flash-attn = { path = "wheels/flash_attn-2.8.3+cu130torch2.12-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl" }
